@@ -13,8 +13,6 @@ PSFio is a File Browser and File Picker which is built with Bootstrap interface 
 
 - Preview for images
 - Better ServiceProvider for Laravel and publishing of static files
-- Better design
-- Handle errors (including not enough permissions)
 - Add multi user support so every Laravel user can have it's own files
 - Add Laravel config so you can configure the library options
 - Add support for Route prefix in Laravel
