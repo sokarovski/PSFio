@@ -21,7 +21,12 @@ class PSFio extends BaseController {
     private $dirPath = '';
 
     function __construct(Request $request) {
-        $this->root = $this->sanitize(public_path('/files'));
+        $root = config('psfio.roots');
+        if ($root == null)
+            $root = public_path('/files');
+
+        $this->root = $this->sanitize($root);
+
         $dir = $request->input('folder', '');
         $this->dir = $this->sanitize($dir);
         $this->dirPath = $this->sanitize($this->root . '/' . $dir);
@@ -123,5 +128,11 @@ class PSFio extends BaseController {
         $output = preg_replace('/\.\/|\.\.\//', '', $path);
         $output = preg_replace('/\/+/', '/', $output);
         return rtrim($output, '/');
+    }
+
+    public static function head() {
+        return 
+        '<meta name="csrf-token" content="'. csrf_token() .'">' .
+        '<meta name="psfio-connector" content="'. route('psfio.connector') .'">';
     }
 }

@@ -19,12 +19,18 @@ class PSFioServiceProvider extends ServiceProvider
             __DIR__.'/../resources/js/' => public_path('vendor/ps/psfio/js/')
         ], 'public');
 
+        $this->publishes([
+            __DIR__.'/../config/config.php' => config_path('psfio.php'),
+        ], 'config');
+
         if (! $this->app->routesAreCached()) {
+            $prefix = $this->getPrefix();
+
             Route::group([
                 'as' => 'psfio.',
-                'middleware' => [],
+                'middleware' => config('psfio.middlewares', []),
                 'namespace' => 'PS\PSFio',
-                'prefix' => 'psfio',
+                'prefix' => $prefix,
             ], function ($router) {
                 require __DIR__.'/../routes.php';   
             });
@@ -39,5 +45,16 @@ class PSFioServiceProvider extends ServiceProvider
     public function register()
     {
         
+    }
+
+    public function getPrefix() {
+        $prefix = config('psfio.prefix', '');
+        if ($prefix == '')
+            return 'psfio';
+
+        if (substr($prefix, -1, 1) == '/')
+            $prefix = substr($prefix, 0, -1);
+
+        return $prefix.'/psfio';
     }
 }
