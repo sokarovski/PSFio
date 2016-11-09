@@ -4,6 +4,8 @@ PSFio is a File Browser and File Picker which is built with Bootstrap interface 
 
 ![alt text](https://github.com/sokarovski/PSFio/blob/master/thumbs/inline_grid.png "Inline Browser with Grid Renderer")
 
+![alt text](https://github.com/sokarovski/PSFio/blob/master/thumbs/popup_table.png "Popup Browser with Table Renderer")
+
 ## Requirements
 
 - PHP >=5.4
