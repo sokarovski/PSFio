@@ -13,6 +13,9 @@ PSFio is a File Browser and File Picker which is built with Bootstrap interface 
 
 - Preview for images
 - ~~Better ServiceProvider for Laravel and publishing of static files~~
+- Add jQuery.fn.PSFioBrowse hook
+- ~~Add jQuery.fn.PSFFioFileBrowser hook~~
+- Add jQuery.fn.Upload hook
 - Add multi user support so every Laravel user can have it's own files
 - Add Laravel config so you can configure the library options
 - Add support for Route prefix in Laravel
@@ -41,6 +44,21 @@ and
 Then you need to require the package with composer 
 ```bash
 composer require ps/psfio
+```
+
+Register the plugin service provider inside your **config/app.php**
+```php
+    /*
+     * Application Service Providers...
+     */
+    App\Providers\AppServiceProvider::class,
+    App\Providers\AuthServiceProvider::class,
+    // App\Providers\BroadcastServiceProvider::class,
+    App\Providers\EventServiceProvider::class,
+    App\Providers\RouteServiceProvider::class,
+    
+    //Paste this line
+    PS\PSFio\PSFioServiceProvider::class,
 ```
 
 You will also need to publish the public files 
@@ -100,9 +118,31 @@ You can also show the file browser inline
     });
 </script>
 ```
-## Another Usage
+## Another Usage and jQuery hooks
 
-PSFio **will** soon provide jQuery hooks for inline file browser, browse button and simple image picker.
+### File Browser
+Initiating inline file browser
+```html
+<div data-psfio="file-browser"></div>
+```
+
+Or if you want to do manually with custom options
+```html
+<div class="file-browser"></div>
+
+...
+
+<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="{{ asset('vendor/ps/psfio/js/psfio.min.js') }}"></script>
+<script>
+    jQuery('.file-browser').PSFioFileBrowser({ /* options */ });
+</script>
+```
+
+### Other hooks
+PSFio **will** soon provide jQuery hooks for browse button and simple image picker.
+
 
 ## License
 

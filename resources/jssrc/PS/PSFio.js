@@ -49,7 +49,7 @@ PS.PSFio = class {
         else if (sessionRenderer = localStorage.getItem('psfio-renderer')) 
             this.setRenderer(PS.PSFio.Renderers[sessionRenderer]);
         else 
-            this.setRenderer(PS.PSFio.Renderers.Table);
+            this.setRenderer(PS.PSFio.Renderers.Grid);
     }
 
     setRenderer(renderer) {
