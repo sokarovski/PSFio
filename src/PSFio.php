@@ -131,8 +131,13 @@ class PSFio extends BaseController {
     }
 
     public static function head() {
+        $root = config('psfio.rootUrl');
+        if ($root == null)
+            $root = asset('files/');
+
         return 
-        '<meta name="csrf-token" content="'. csrf_token() .'">' .
-        '<meta name="psfio-connector" content="'. route('psfio.connector') .'">';
+        '<meta name="csrf-token" content="'. csrf_token() .'">'
+        . '<meta name="psfio-connector" content="'. route('psfio.connector') .'">'
+        . '<meta name="psfio-root" content="'. $root .'">';
     }
 }

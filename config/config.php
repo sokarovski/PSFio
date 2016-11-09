@@ -14,6 +14,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Root URL
+    |--------------------------------------------------------------------------
+    | The folder which will be the root of the file browser. This folder also 
+    | Needs to be writeable and needs to resides inside the public dir. 
+    */
+   
+    'rootUrl' => Config('app.url').'/files',
+
+    /*
+    |--------------------------------------------------------------------------
     | Prefix 
     |--------------------------------------------------------------------------
     | The prefix that will be prepended for the routes that are used for the 

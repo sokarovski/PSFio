@@ -1,11 +1,13 @@
 (function($, name) {
 
     $.fn[name] = function( methodOrOptions ) {
+        var me = $(this);
+        if (!me.length) 
+            return me;
 
-        if (!$(this).length) 
-            return $(this);
+        var firstMe = me.eq(0);
         
-        var instance = $(this).data(name);
+        var instance = firstMe.data(name);
             
         // CASE: call method     
         if (instance && instance[ methodOrOptions ] && 
@@ -17,9 +19,9 @@
         // CASE: set options or initialize
         } else if ( typeof methodOrOptions === 'object' || ! methodOrOptions ) {
 
-            instance = new PS.PSFio.Widgets.Upload( $(this), methodOrOptions );    // ok to overwrite if this is a re-init
-            $(this).data(name, instance);
-            return $(this);
+            instance = new PS.PSFio.Widgets.Image( firstMe, methodOrOptions );    // ok to overwrite if this is a re-init
+            firstMe.data(name, instance);
+            return me;
         
         // CASE: method called before init
         } else if ( !instance ) {
@@ -32,7 +34,9 @@
     };
 
     $(document).ready(function() {
-        jQuery('input[data-psfio]')[name]();
+        var inputs = $('input[data-psfio="image"]');
+        for (var i=0; i<inputs.length; i++)
+            inputs.eq(i)[name]();
     });
 
-})(jQuery, 'PSFioUpload');
+})(jQuery, 'PSFioImage');

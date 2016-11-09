@@ -309,9 +309,10 @@ PS.PSFio = function () {
     };
 
     _class.prototype.pickFile = function pickFile(file) {
-        if (this.callback) this.callback([file]);
+        //@TODO should be sanitized when sanitization function is created and this condition should be removed this.loadedDir ? : ...
+        if (this.callback) this.callback([this.loadedDir ? this.loadedDir + '/' + file : file]);
 
-        if (this.destroyOnPick) this.destroy();else this.hide();
+        if (this.destroyOnPick) this.destroy();else if (!this.inline) this.hide();
     };
 
     _class.prototype.goToItem = function goToItem(item) {
@@ -367,6 +368,16 @@ PS.PSFio = function () {
         if (!this.sharedInstance) this.sharedInstance = new this({ show: false });
 
         return this.sharedInstance;
+    };
+
+    _class.getAssetPath = function getAssetPath(path) {
+        if (!this.root) {
+            var root = $('meta[name="psfio-root"]').attr('content');
+            this.root = root ? root : '/files';
+        }
+
+        //@TODO Should be sanitized upon concatenation
+        return this.root + '/' + path;
     };
 
     return _class;
@@ -541,7 +552,7 @@ PS.PSFio.Renderers.Grid = {
         var parts = this.getMutual(file);
         parts.element.addClass('ps-fio-grid-item-folder');
         var icon = PS.PSFio.FileHelper.getFaIconForFile(file);
-        if (icon !== true) jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.image);
+        if (icon === true) parts.image.css('background-image', 'url("' + PS.PSFio.getAssetPath(file) + '")');else jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.image);
         return parts.element;
     },
 
@@ -618,7 +629,7 @@ PS.PSFio.Renderers.Table = {
         var parts = this.getMutual(file);
         parts.element.addClass('ps-fio-table-item-folder');
         var icon = PS.PSFio.FileHelper.getFaIconForFile(file);
-        if (icon !== true) jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.icon);
+        if (icon === true) jQuery('<img class="img-responsive" />').attr('src', PS.PSFio.getAssetPath(file)).appendTo(parts.icon);else jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.icon);
         return parts.element;
     },
 
@@ -702,6 +713,15 @@ PS.PSFio.Renderers.Table = {
     }
 };
 
+$(document).ready(function () {
+    var browsers = jQuery('*[data-psfio="browse"]');
+    for (var i = 0; i < browsers.length; i++) {
+        browsers.eq(i).on('click', function () {
+            PS.PSFio.getShared().show();
+        });
+    }
+});
+
 (function ($, name) {
 
     $.fn[name] = function (methodOrOptions) {
@@ -743,15 +763,17 @@ PS.PSFio.Renderers.Table = {
         var browsers = jQuery('*[data-psfio="file-browser"]');
         for (var i = 0; i < browsers.length; i++) browsers.eq(i)[name]();
     });
-})(jQuery, 'PSFFioFileBrowser');
+})(jQuery, 'PSFioFileBrowser');
 
 (function ($, name) {
 
     $.fn[name] = function (methodOrOptions) {
+        var me = $(this);
+        if (!me.length) return me;
 
-        if (!$(this).length) return $(this);
+        var firstMe = me.eq(0);
 
-        var instance = $(this).data(name);
+        var instance = firstMe.data(name);
 
         // CASE: call method     
         if (instance && instance[methodOrOptions] && typeof instance[methodOrOptions] == 'function') {
@@ -761,9 +783,9 @@ PS.PSFio.Renderers.Table = {
             // CASE: set options or initialize
         } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
 
-            instance = new PS.PSFio.Widgets.Upload($(this), methodOrOptions); // ok to overwrite if this is a re-init
-            $(this).data(name, instance);
-            return $(this);
+            instance = new PS.PSFio.Widgets.Image(firstMe, methodOrOptions); // ok to overwrite if this is a re-init
+            firstMe.data(name, instance);
+            return me;
 
             // CASE: method called before init
         } else if (!instance) {
@@ -776,47 +798,59 @@ PS.PSFio.Renderers.Table = {
     };
 
     $(document).ready(function () {
-        jQuery('input[data-psfio]')[name]();
+        var inputs = $('input[data-psfio="image"]');
+        for (var i = 0; i < inputs.length; i++) inputs.eq(i)[name]();
     });
-})(jQuery, 'PSFioUpload');
+})(jQuery, 'PSFioImage');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-PS.PSFio.Widgets.Upload = function () {
-    function _class(files, opts) {
+PS.PSFio.Widgets.Image = function () {
+    function _class(file, opts) {
         _classCallCheck(this, _class);
 
-        this.arm(files);
+        this.input = file;
+        this.build(file);
+        this.displayFile(file.val());
     }
 
-    _class.prototype.arm = function arm(files) {
-        for (var i = 0; i < files.length; i++) {
-            var fileElement = files.eq(i);
-            this.build(fileElement);
-        }
+    _class.prototype.build = function build(file) {
+        var wrapper = jQuery('<div class="psfio-image-widget"></div>').insertAfter(file);
+        var formGroup = jQuery('<div class="form-group"></div>').appendTo(wrapper);
+        this.noImage = jQuery('<div>No image selected</div>').appendTo(formGroup);
+        this.image = jQuery('<img class="img-responsive" />').appendTo(formGroup);
+
+        var buttonGroup = jQuery('<div class="btn-group">').appendTo(wrapper);
+        var browse = jQuery('<button type="button" class="btn btn-xs btn-default"><i class="fa fa-folder"></i> Browse</button>').appendTo(buttonGroup);
+        var clear = jQuery('<button type="button" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i> Remove</button>').appendTo(buttonGroup);
+
+        browse.on('click', this.browse.bind(this));
+        clear.on('click', this.clear.bind(this));
+        file.detach().appendTo(wrapper);
     };
 
-    _class.prototype.getTemplate = function getTemplate(file) {};
-
-    _class.prototype.browse = function browse(fileSection) {
+    _class.prototype.browse = function browse() {
         var fio = PS.PSFio.getShared();
-        fio.setCallback(this.onPick.bind(this, fileSection));
+        fio.setCallback(this.onPick.bind(this));
         fio.show();
     };
 
-    _class.prototype.onPick = function onPick(fileSection, img, files) {
-        if (files.length > 0) {
-            var file = files[0];
-            fileSection.find('input').val(file);
-            fileSection.find('img').show().attr('src', file);
-            fileSection.find('default').hide();
+    _class.prototype.onPick = function onPick(files) {
+        if (files.length > 0) this.displayFile(files[0]);
+    };
+
+    _class.prototype.displayFile = function displayFile(file) {
+        if (file == '') this.clear();else {
+            this.input.val(file);
+            this.image.show().attr('src', PS.PSFio.getAssetPath(file));
+            this.noImage.hide();
         }
     };
 
-    _class.prototype.clear = function clear(fileSection, img) {
-        fileSection.find('input').val('');
-        fileSection.find('img').hide();
-        fileSection.find('default').show();
+    _class.prototype.clear = function clear() {
+        this.input.val('');
+        this.image.hide();
+        this.noImage.show();
     };
 
     return _class;

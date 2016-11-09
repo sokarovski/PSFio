@@ -15,11 +15,11 @@ PSFio is a File Browser and File Picker which is built with Bootstrap interface 
 
 ## TODO
 
-- Preview for images
+- ~~Preview for images~~ Maybe cached thumbnails in future originals are shown for now
 - ~~Better ServiceProvider for Laravel and publishing of static files~~
-- Add jQuery.fn.PSFioBrowse hook
-- ~~Add jQuery.fn.PSFFioFileBrowser hook~~
-- Add jQuery.fn.Upload hook
+- ~~Add browse button helper hook~~
+- ~~Add jQuery.fn.PSFioFileBrowser hook~~
+- ~~Add jQuery.fn.PSFioImage hook~~
 - Add multi user support so every Laravel user can have it's own files
 - ~~Add Laravel config so you can configure the library options~~
 - ~~Add support for Route prefix in Laravel~~
@@ -28,6 +28,11 @@ PSFio is a File Browser and File Picker which is built with Bootstrap interface 
 - Move multiple files
 - Delete multiple files
 - ~~Create helper to expose all needed variables in blade (csrf, connector)~~
+- Better Design
+- Error Handling (permissions errors also)
+- Add support for file sizes and creaton dates to the list
+- Upload progress
+- Filter files by type 
 
 ## Installation
 
@@ -73,17 +78,13 @@ php artisan vendor:publish --tag=public
 
 At this point you can go to **config/psfio.php** to setup some paths if you like but if you dont do it PSFio will work automatically in public/files/ folder.
 
-Then you will need to add the jquery, fontawesome, bootstrap and PSFio to your project. 
-
-You will also need to specify the connector which helps PSFio find the route to your Laravel installation. If you not provide one /psfio will be assumed. If your Laravel is working on root folder then you dont need to provide one but if you have installed Laravel in a subfolder or you have changed the config of the routes to be prefixed then this is required.
-
-You will also need to provide the csrf_token in the head. For more information on csrf token read: https://laravel.com/docs/5.3/csrf
+Then you will need to add the jquery, fontawesome, bootstrap and PSFio to your project and call the **PS\PSFio\PSFio::head()** method to generate connection variables. 
 
 If you use any packager for assets you can just add the dependencies and **vendor/ps/psfio/css/psfio.css** and **vendor/ps/psfio/js/psfio.js** files to it.
 ```html
 <head>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="psfio-connector" content="{{ route('psfio.connector') }}">
+    {!! PS\PSFio\PSFio::head() !!}
+
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('vendor/ps/psfio/css/psfio.min.css') }}">
@@ -94,19 +95,6 @@ If you use any packager for assets you can just add the dependencies and **vendo
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="{{ asset('vendor/ps/psfio/js/psfio.min.js') }}"></script>
 </body>
-```
-
-If you dont want to print the csrf token separately from the connector and want and easier code you can also do this instead of the two lines above 
-```html
-<head>
-    <!-- replace this two lines -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="psfio-connector" content="{{ route('psfio.connector') }}">
-
-    <!-- with this line -->
-    {!! PS\PSFio\PSFio::head() !!}
-</head>
-...
 ```
 
 You will also need to create the files folder where all the files will reside and add public permissions to it
@@ -160,9 +148,32 @@ Or if you want to do manually with custom options
 </script>
 ```
 
-### Other hooks
-PSFio **will** soon provide jQuery hooks for browse button and simple image picker.
+### Browse button
+You can also create a button that will allow browing files in popup with the following syntax. 
+Note that you only need to add **data-psfio="browse"** to any element that you want to open a browser.
+```html
+<button class="btn btn-default" data-psfio="browse"><i class="fa fa-folder"></i> Browse my files</button>
+```
 
+### Image Widget
+
+![alt text](https://github.com/sokarovski/PSFio/blob/master/thumbs/image_preview.jpg "Example if Image Widget")
+
+If you are using the **laravelcollective/html** package you can use this code to create the widget
+```html
+<div class="form-group">
+    {!! Form::label('image', 'Video') !!}
+    {!! Form::hidden('image', NULL, ['data-psfio'=>'image']) !!}
+</div> 
+```
+
+If you are not using it, it's pretty simple also
+```html
+<div class="form-group">
+    <label>Video</label>
+    <input type="hidden" value="{{ $model->myImage }}" name="myImage" data-psfio="image" />
+</div> 
+```
 
 ## License
 

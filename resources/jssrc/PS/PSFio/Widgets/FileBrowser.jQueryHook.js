@@ -44,4 +44,4 @@
             browsers.eq(i)[name]();
     });
 
-})(jQuery, 'PSFFioFileBrowser');
+})(jQuery, 'PSFioFileBrowser');

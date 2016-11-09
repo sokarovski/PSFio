@@ -317,12 +317,13 @@ PS.PSFio = class {
     }
 
     pickFile(file) {
+        //@TODO should be sanitized when sanitization function is created and this condition should be removed this.loadedDir ? : ...
         if (this.callback)
-            this.callback([file]);
+            this.callback([this.loadedDir ? this.loadedDir+'/'+file : file]);
 
         if (this.destroyOnPick)
             this.destroy();
-        else 
+        else if (!this.inline)
             this.hide();
     }
 
@@ -380,5 +381,15 @@ PS.PSFio = class {
             this.sharedInstance = new this({show: false});
 
         return this.sharedInstance;
+    }
+
+    static getAssetPath(path) {
+        if (!this.root) {
+            var root = $('meta[name="psfio-root"]').attr('content');
+            this.root = root ? root : '/files';
+        }
+
+        //@TODO Should be sanitized upon concatenation
+        return this.root + '/' + path;
     }
 }
