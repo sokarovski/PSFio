@@ -2,6 +2,8 @@
 
 PSFio is a File Browser and File Picker which is built with Bootstrap interface and has a Laravel 5.3 connector that allows it to work with any Laravel 5.3 applications. It is very usefull when you need to mock some Admin areas or just give users access to browse and manage files. The idea is to support many other backend frameworks so Laravel is just the begining that i need for now. 
 
+![alt text](https://github.com/sokarovski/PSFio/blob/master/thumbs/inline_grid.png "Inline Browser with Grid Renderer")
+
 ## Requirements
 
 - PHP >=5.4
