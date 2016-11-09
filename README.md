@@ -24,7 +24,7 @@ PSFio is a File Browser and File Picker which is built with Bootstrap interface 
 
 ## Installation
 
-First you need to add the git repository to your composer.json and lower the minimum-stability to dev since this package is not yet in stable version
+First you need to add the git repository to your composer.json and lower the *minimum-stability* to **dev** since this package is not yet in stable version
 ```json
 "minimum-stability": "dev",
 ```
@@ -49,9 +49,12 @@ php artisan vendor:publish --tag=public
 ```
 
 Then you will need to add the jquery, fontawesome, bootstrap and PSFio to your project. 
+
 You will also need to specify the connector which helps PSFio find the route to your Laravel installation if you not provide one /psfio will be assumed. So if your laravel is working on root folder then you dont need to provide one but if you have installed laravel in a subfolder or you have changed the config of the routes to be prefixed then this is required.
+
 You will also need to provide the csrf_token in the head. For more information on csrf token read: https://laravel.com/docs/5.3/csrf
-If you use any packager for frontend files you can just add the dependencies and *vendor/ps/psfio/css/psfio.min.css* and *vendor/ps/psfio/js/psfio.min.js* files to it.
+
+If you use any packager for frontend files you can just add the dependencies and **vendor/ps/psfio/css/psfio.min.css** and **vendor/ps/psfio/js/psfio.min.js** files to it.
 ```html
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -78,7 +81,7 @@ chmod 777 public/files
 
 If you have completed the steps above you are all set to go. You can connect any button to open up the file browser like so:
 ```html
-<button class="btn btn-default" onclick="new PS.PSFio({});"><i class="fa fa-folder"></i> Browse</button>
+<button class="btn btn-default" onclick="PS.PSFio.getShared().show();"><i class="fa fa-folder"></i> Browse</button>
 ```
 
 You can also show the file browser inline
@@ -97,6 +100,9 @@ You can also show the file browser inline
     });
 </script>
 ```
+## Another Usage
+
+PSFio **will** soon provide jQuery hooks for inline file browser, browse button and simple image picker.
 
 ## License
 
