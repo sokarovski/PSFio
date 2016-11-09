@@ -1,0 +1,18 @@
+{
+    "name": "ps/psfio",
+    "description": "File Picker and File Browser for Laravel with Bootstrap interface",
+    "type": "package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Petar Sokarovski",
+            "email": "psokarovski@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "PS\\PSFio": "packages/psfio/src"
+        }
+    },
+}
