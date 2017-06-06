@@ -177,6 +177,4 @@ If you are not using it, it's pretty simple also
 
 ## License
 
-MediaParser is licensed under the [MIT License](http://opensource.org/licenses/MIT).
-
 Copyright 2016 [Petar Sokarovski](http://github.com/sokarovski)
