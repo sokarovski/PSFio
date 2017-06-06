@@ -55,13 +55,7 @@ class PSFio extends BaseController {
         $files = $request->allFiles();
 
         //@TODO Filter only allowed files
-        foreach($files as $file) {
-            if (is_array($file)){
-                foreach($file as $subfiles)
-                    $subfiles->store($this->dirPath.'/');
-            } else 
-                $file->store($this->dirPath.'/');
-        }
+        $this->saveUploadedFiles($files, $this->dirPath.'/');
         
         return $this->files();
     }
@@ -112,6 +106,16 @@ class PSFio extends BaseController {
      * Helpers
      *============================================================================================*/
 
+    function saveUploadedFiles($files, $path) {
+        foreach($files as $file) {
+            if (is_array($file))
+                $this->saveUploadedFiles($file, $path);
+            else 
+                $file->move($path, $file->getClientOriginalName());
+                //$file->store($path);
+        }
+    }
+
     function connector() {
         return 'connected';
     }
@@ -119,7 +123,7 @@ class PSFio extends BaseController {
     private function basify($input) {
         $output = array();
         foreach ($input as $path) {
-            $output[] = File::basename($path);
+            $output[] = basename($path);
         }
         return $output;
     }
