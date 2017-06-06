@@ -1,10 +1,10 @@
 PS.PSFio.Renderers.Table = {
-    getFile: function(file) {
-        var parts = this.getMutual(file);
+    getFile: function(file, path) {
+        var parts = this.getMutual(file, path);
         parts.element.addClass('ps-fio-table-item-folder');
         var icon = PS.PSFio.FileHelper.getFaIconForFile(file);
         if (icon === true)
-            jQuery('<img class="img-responsive" />').attr('src', PS.PSFio.getAssetPath(file)).appendTo(parts.icon);
+            jQuery('<img class="img-responsive" />').attr('src', PS.PSFio.getAssetPath(path+'/'+file)).appendTo(parts.icon);
         else 
             jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.icon);
         return parts.element;

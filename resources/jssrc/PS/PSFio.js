@@ -271,14 +271,14 @@ PS.PSFio = class {
         //List Folders
         for (var i=0; i<this.structure.folders.length; i++) {
             var folder = this.structure.folders[i];
-            var folderElement = this.renderer.getFolder(folder);
+            var folderElement = this.renderer.getFolder(folder, this.loadedDir);
             this.consumeFolderElement(folderElement, folder);
         }
 
         //List Files
         for (var i=0; i<this.structure.files.length; i++) {
             var file = this.structure.files[i];
-            var fileElement = this.renderer.getFile(file);
+            var fileElement = this.renderer.getFile(file, this.loadedDir);
             this.consumeFileElement(fileElement, file);
         }
     }

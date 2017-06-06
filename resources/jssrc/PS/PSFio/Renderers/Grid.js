@@ -1,10 +1,10 @@
 PS.PSFio.Renderers.Grid = {
-    getFile: function(file) {
+    getFile: function(file, path) {
         var parts = this.getMutual(file);
         parts.element.addClass('ps-fio-grid-item-folder');
         var icon = PS.PSFio.FileHelper.getFaIconForFile(file);
         if (icon === true)
-            parts.image.css('background-image', 'url("'+PS.PSFio.getAssetPath(file)+'")');
+            parts.image.css('background-image', 'url("'+PS.PSFio.getAssetPath(path+'/'+file)+'")');
         else 
             jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.image);
         return parts.element;

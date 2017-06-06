@@ -263,14 +263,14 @@ PS.PSFio = function () {
         //List Folders
         for (var i = 0; i < this.structure.folders.length; i++) {
             var folder = this.structure.folders[i];
-            var folderElement = this.renderer.getFolder(folder);
+            var folderElement = this.renderer.getFolder(folder, this.loadedDir);
             this.consumeFolderElement(folderElement, folder);
         }
 
         //List Files
         for (var i = 0; i < this.structure.files.length; i++) {
             var file = this.structure.files[i];
-            var fileElement = this.renderer.getFile(file);
+            var fileElement = this.renderer.getFile(file, this.loadedDir);
             this.consumeFileElement(fileElement, file);
         }
     };
@@ -548,11 +548,11 @@ PS.PSFio.Builders.Popup = function () {
 }();
 
 PS.PSFio.Renderers.Grid = {
-    getFile: function (file) {
+    getFile: function (file, path) {
         var parts = this.getMutual(file);
         parts.element.addClass('ps-fio-grid-item-folder');
         var icon = PS.PSFio.FileHelper.getFaIconForFile(file);
-        if (icon === true) parts.image.css('background-image', 'url("' + PS.PSFio.getAssetPath(file) + '")');else jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.image);
+        if (icon === true) parts.image.css('background-image', 'url("' + PS.PSFio.getAssetPath(path + '/' + file) + '")');else jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.image);
         return parts.element;
     },
 
@@ -625,11 +625,11 @@ PS.PSFio.Renderers.Grid = {
 };
 
 PS.PSFio.Renderers.Table = {
-    getFile: function (file) {
-        var parts = this.getMutual(file);
+    getFile: function (file, path) {
+        var parts = this.getMutual(file, path);
         parts.element.addClass('ps-fio-table-item-folder');
         var icon = PS.PSFio.FileHelper.getFaIconForFile(file);
-        if (icon === true) jQuery('<img class="img-responsive" />').attr('src', PS.PSFio.getAssetPath(file)).appendTo(parts.icon);else jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.icon);
+        if (icon === true) jQuery('<img class="img-responsive" />').attr('src', PS.PSFio.getAssetPath(path + '/' + file)).appendTo(parts.icon);else jQuery('<i class="fa"></i>').addClass(icon).appendTo(parts.icon);
         return parts.element;
     },
 
